@@ -2,6 +2,11 @@
 
 I made this to move the d-pad in my game, but you can use it for other UI too, like dialog boxes and windows.
 
+## Requirements
+
+- Unity UI (uGUI) for pointer input.
+- TextMesh Pro (TMP UGUI) to show the text in the demo scene. Import **TMP Essential Resources** from `Window > TextMeshPro > Import TMP Essential Resources` so the demo fonts and settings are available.
+
 ## Setup
 
 Add `DraggableUIElement` to the UI object you want to move. It needs a `RectTransform` parent so it can keep the object inside the parent bounds. Make sure your Canvas has a `GraphicRaycaster` and your scene has an `EventSystem`.
