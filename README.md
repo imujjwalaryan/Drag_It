@@ -17,6 +17,8 @@ The object needs a UI Graphic to receive pointer input. If it doesn't have one, 
 
 Turn on **Edit Mode** while the game is running, then drag the object. Turn it off when you're done. Its position is saved automatically after you finish dragging.
 
+While dragging, the object snaps to a grid. Set **Snap Step (Pixels)** in the Inspector to choose the grid spacing; set it to `0` to turn snapping off. The slider goes up to 100 pixels, and you can type a value into the field as well.
+
 The component has **Enable Edit Mode** and **Disable Edit Mode** buttons in the Inspector during Play Mode. You can also hook these methods up to your own buttons:
 
 ```csharp

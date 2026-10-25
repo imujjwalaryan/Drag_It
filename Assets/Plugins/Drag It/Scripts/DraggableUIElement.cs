@@ -9,7 +9,7 @@ namespace RyujinInteractive.CustomUI
     /// <summary>
     /// Makes a Unity UI element and its children draggable at runtime while Edit Mode is enabled.
     /// The element is kept within its parent's RectTransform, and its local X and Y position
-    /// are stored in PlayerPrefs. Supports Unity UI graphics, including TextMesh Pro UGUI.
+    /// are stored in PlayerPrefs. Supports pixel-grid snapping and Unity UI graphics, including TextMesh Pro UGUI.
     /// </summary>
     [RequireComponent(typeof(RectTransform))]
     public class DraggableUIElement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -23,6 +23,12 @@ namespace RyujinInteractive.CustomUI
         [Tooltip("Dragging only works while true. Toggle from an 'Edit Controls' button.")]
         [SerializeField]
         private bool editMode = false;
+
+        /// <summary>Grid interval in screen pixels. Set to zero to turn snapping off.</summary>
+        [Tooltip("Grid snap interval in pixels. Set to 0 to disable snapping.")]
+        [Range(0f, 100f)]
+        [SerializeField]
+        private float snapStepPixels = 10f;
 
         /// <summary>RectTransform attached to this GameObject.</summary>
         private RectTransform rect;
@@ -121,13 +127,30 @@ namespace RyujinInteractive.CustomUI
                 grabOffset = (Vector2)rect.localPosition - local;
         }
 
-        /// <summary>Moves the container with the pointer and clamps it within the parent RectTransform.</summary>
+        /// <summary>Moves the element with the pointer, snaps its position, and clamps it within the parent.</summary>
         public void OnDrag(PointerEventData eventData)
         {
             if (!editMode) return;
             if (!TryGetLocalPoint(eventData, out Vector2 local)) return;
 
-            rect.localPosition = ClampToParent(local + grabOffset);
+            Vector2 targetPosition = SnapToGrid(local + grabOffset);
+            rect.localPosition = ClampToParent(targetPosition);
+        }
+
+        /// <summary>Snaps a parent-local position to the configured grid interval in canvas pixels.</summary>
+        private Vector2 SnapToGrid(Vector2 position)
+        {
+            if (snapStepPixels <= 0f) return position;
+
+            float canvasScale = 1f;
+            Canvas canvas = GetComponentInParent<Canvas>();
+            if (canvas != null && canvas.rootCanvas.scaleFactor > 0f)
+                canvasScale = canvas.rootCanvas.scaleFactor;
+
+            float step = snapStepPixels / canvasScale;
+            position.x = Mathf.Round(position.x / step) * step;
+            position.y = Mathf.Round(position.y / step) * step;
+            return position;
         }
 
         /// <summary>Saves the local position when an Edit Mode drag ends.</summary>

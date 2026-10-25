@@ -30,6 +30,9 @@ public class DraggableUIElementEditor : Editor
             "Enable Edit Mode to drag this UI element within its parent. Disable Edit Mode to lock it in place.",
             MessageType.Info);
         EditorGUILayout.HelpBox(
+            "Snap Step (Pixels) sets the grid spacing while dragging. Set it to 0 to turn snapping off.",
+            MessageType.Info);
+        EditorGUILayout.HelpBox(
             "In a running game, use these buttons to enter or exit Edit Mode. You can also call EnableEditMode() and DisableEditMode() from your own UI buttons or scripts.",
             MessageType.None);
 
